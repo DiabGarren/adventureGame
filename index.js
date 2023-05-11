@@ -119,13 +119,17 @@ window.addEventListener('click', (event) => {
     }
 });
 
-const typePromptText = async (promptText, promptElement, choice1, choice2, choice3) => {
+const typePromptText = async (promptText, promptElement, choice1, choice2, choice3, endNumber) => {
     promptElement.textContent = '';
     for (let i = 0; i < promptText.length; i++) {
         promptElement.textContent += promptText[i];
         await wait(speed);
     }
     speed = 35;
+
+    if (endNumber != '') {
+        document.querySelector('.ending').textContent = `Ending ${endNumber} of 10`;
+    }
 
     choice1.textContent = choice1.dataset.option;
     choice2.textContent = choice2.dataset.option;
@@ -169,7 +173,7 @@ choice1.dataset.option = level1.option1;
 choice2.dataset.level = 1;
 choice2.dataset.option = level1.option2;
 
-typePromptText(level1.prompt, prompt, choice1, choice2, choice3);
+typePromptText(level1.prompt, prompt, choice1, choice2, choice3, '');
 
 
 choice1.addEventListener('click', (event) => {
@@ -177,13 +181,12 @@ choice1.addEventListener('click', (event) => {
     let choice = event.target.dataset.option;
     switch (level) {
         case '0':
-            newLevel(1, level1.prompt, level1.option1, level1.option2, '');
+            newLevel(1, level1.prompt, level1.option1, level1.option2, '', '');
             break;
         case '1':
-            console.log('Restart');
             level2.forEach((option) => {
                 if (option.choice == choice) {
-                    newLevel(2, option.prompt, option.option1, option.option2, '');
+                    newLevel(2, option.prompt, option.option1, option.option2, '', '');
                 }
             });
             break;
@@ -193,7 +196,7 @@ choice1.addEventListener('click', (event) => {
                     if (option.end) {
                         endGame(option.end, option.prompt);
                     } else {
-                        newLevel(3, option.prompt, option.option1, option.option2, '');
+                        newLevel(3, option.prompt, option.option1, option.option2, '', '');
                     }
                 }
             });
@@ -205,10 +208,10 @@ choice1.addEventListener('click', (event) => {
                         endGame(option.end, option.prompt);
                     } else {
                         if (option.option3) {
-                            newLevel(4, option.prompt, option.option1, option.option2, option.option3);
+                            newLevel(4, option.prompt, option.option1, option.option2, option.option3, '');
                         
                         } else {
-                            newLevel(4, option.prompt, option.option1, option.option2, '');
+                            newLevel(4, option.prompt, option.option1, option.option2, '', '');
                         }
                     }
                 }
@@ -231,7 +234,7 @@ choice2.addEventListener('click', (event) => {
         case '1':
             level2.forEach((option) => {
                 if (option.choice == choice) {
-                    newLevel(2, option.prompt, option.option1, option.option2, '');
+                    newLevel(2, option.prompt, option.option1, option.option2, '', '');
                 }
             });
             break;
@@ -241,7 +244,7 @@ choice2.addEventListener('click', (event) => {
                     if (option.end) {
                         endGame(option.end, option.prompt);
                     } else {
-                        newLevel(3, option.prompt, option.option1, option.option2, '');
+                        newLevel(3, option.prompt, option.option1, option.option2, '', '');
                     }
                 }
             });
@@ -253,10 +256,10 @@ choice2.addEventListener('click', (event) => {
                         endGame(option.end, option.prompt);
                     } else {
                         if (option.option3) {
-                            newLevel(4, option.prompt, option.option1, option.option2, option.option3);
+                            newLevel(4, option.prompt, option.option1, option.option2, option.option3, '');
                         
                         } else {
-                            newLevel(4, option.prompt, option.option1, option.option2, '');
+                            newLevel(4, option.prompt, option.option1, option.option2, '', '');
                         }
                     }
                 }
@@ -286,7 +289,12 @@ choice3.addEventListener('click', (event) => {
     }
 });
 
-const newLevel = (level, promptText, option1Text, option2Text, choice3Text) => {
+document.querySelector('.clear').addEventListener('click', () => {
+    localStorage.ag_endings = JSON.stringify([]);
+    location.reload();
+})
+
+const newLevel = (level, promptText, option1Text, option2Text, choice3Text, endNumber) => {
     choice1.textContent = '';
     choice1.dataset.level = level;
     choice1.dataset.option = option1Text;
@@ -298,8 +306,10 @@ const newLevel = (level, promptText, option1Text, option2Text, choice3Text) => {
     choice3.textContent = '';
     choice3.dataset.level = level;
     choice3.dataset.option = choice3Text;
+    
+    document.querySelector('.ending').textContent = '';
 
-    typePromptText(promptText, prompt, choice1, choice2, choice3);
+    typePromptText(promptText, prompt, choice1, choice2, choice3, endNumber);
 };
 
 const endGame = (endNumber, promptText) => {
@@ -309,7 +319,7 @@ const endGame = (endNumber, promptText) => {
     console.log(endings);
     localStorage.ag_endings = JSON.stringify(endings);
 
-    newLevel(0, promptText, 'Restart', '');
+    newLevel(0, promptText, 'Restart', '', '', endNumber);
 
     setStarts();
 };
