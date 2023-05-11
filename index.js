@@ -113,8 +113,23 @@ try {
     localStorage.ag_endings = JSON.stringify(endings);
 }
 
-const endingsTrack = document.querySelector('.endings');
-endingsTrack.setAttribute('style', `width: ${endings.length * 75}px;`);
+const completedEndings = document.querySelector('.completed');
+const missingEndings = document.querySelector('.missing');
+
+const setStarts = () => {
+    let height = 75;
+    if (window.innerWidth < 750) {
+        height = window.innerWidth * 0.1;
+    }
+    completedEndings.setAttribute('style', `height: ${height}px; width: ${endings.length * 10}%; background-size: ${100 / endings.length}%;`);
+    missingEndings.setAttribute('style', `height: ${height}px; width: ${100 - endings.length * 10}%; background-size: ${100 / (10 - endings.length)}%;`);
+}
+
+setStarts();
+
+window.addEventListener('resize', () => {
+    setStarts();
+});
 
 const prompt = document.querySelector('.prompt');
 const choice1 = document.querySelector('#choice1');
@@ -271,5 +286,5 @@ const endGame = (endNumber, promptText) => {
     choice3.dataset.option = '';
     choice3.textContent = choice3.dataset.option;
 
-    endingsTrack.setAttribute('style', `width: ${endings.length * 75}px;`);
+    setStarts();
 }

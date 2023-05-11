@@ -1,10 +1,17 @@
 * {
     font-family: 'Press Start 2P', cursive;
     color: white;
+    line-height: 20px;
 }
 
 body {
     background: #141414;
+    margin-inline: 0;
+}
+
+.container {
+    margin: 0 auto;
+    max-width: 750px;
 }
 
 .choice:hover {
@@ -13,7 +20,39 @@ body {
 }
 
 .endings {
-    height: 75px;
-    width: 75px;
+    max-height: 75px;
+    max-width: 750px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.completed,
+.missing {
+    height: 100%;
+    display: inline-block;
+}
+
+.completed {
     background-image: url('/adventureGame/images/star.webp');
+}
+
+.missing {
+    background-image: url('/adventureGame/images/starEmpty.webp');
+}
+
+@media only screen and (max-width: 750px) {
+    .container {
+        margin: 0 1rem;
+    }
+}
+
+@media only screen and (max-width: 500px){
+    * {
+        font-size: 14px;
+    }
+}
+@media only screen and (max-width: 350px){
+    * {
+        font-size: 12px;
+    }
 }
