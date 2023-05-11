@@ -119,7 +119,7 @@ window.addEventListener('click', (event) => {
     }
 });
 
-const typePromptText = async (promptText, promptElement, choice1, choie2) => {
+const typePromptText = async (promptText, promptElement, choice1, choice2, choice3) => {
     promptElement.textContent = '';
     for (let i = 0; i < promptText.length; i++) {
         promptElement.textContent += promptText[i];
@@ -127,8 +127,9 @@ const typePromptText = async (promptText, promptElement, choice1, choie2) => {
     }
     speed = 35;
 
-    choice2.textContent = choice2.dataset.option;
     choice1.textContent = choice1.dataset.option;
+    choice2.textContent = choice2.dataset.option;
+    choice3.textContent = choice3.dataset.option;
 };
 
 let endings;
@@ -168,7 +169,7 @@ choice1.dataset.option = level1.option1;
 choice2.dataset.level = 1;
 choice2.dataset.option = level1.option2;
 
-typePromptText(level1.prompt, prompt, choice1, choice2, '');
+typePromptText(level1.prompt, prompt, choice1, choice2, choice3);
 
 
 choice1.addEventListener('click', (event) => {
@@ -176,13 +177,13 @@ choice1.addEventListener('click', (event) => {
     let choice = event.target.dataset.option;
     switch (level) {
         case '0':
-            newLevel(1, level1.prompt, level1.option1, level1.option2);
+            newLevel(1, level1.prompt, level1.option1, level1.option2, '');
             break;
         case '1':
             console.log('Restart');
             level2.forEach((option) => {
                 if (option.choice == choice) {
-                    newLevel(2, option.prompt, option.option1, option.option2);
+                    newLevel(2, option.prompt, option.option1, option.option2, '');
                 }
             });
             break;
@@ -192,7 +193,7 @@ choice1.addEventListener('click', (event) => {
                     if (option.end) {
                         endGame(option.end, option.prompt);
                     } else {
-                        newLevel(3, option.prompt, option.option1, option.option2);
+                        newLevel(3, option.prompt, option.option1, option.option2, '');
                     }
                 }
             });
@@ -207,7 +208,7 @@ choice1.addEventListener('click', (event) => {
                             newLevel(4, option.prompt, option.option1, option.option2, option.option3);
                         
                         } else {
-                            newLevel(4, option.prompt, option.option1, option.option2);
+                            newLevel(4, option.prompt, option.option1, option.option2, '');
                         }
                     }
                 }
@@ -230,7 +231,7 @@ choice2.addEventListener('click', (event) => {
         case '1':
             level2.forEach((option) => {
                 if (option.choice == choice) {
-                    newLevel(2, option.prompt, option.option1, option.option2);
+                    newLevel(2, option.prompt, option.option1, option.option2, '');
                 }
             });
             break;
@@ -240,7 +241,7 @@ choice2.addEventListener('click', (event) => {
                     if (option.end) {
                         endGame(option.end, option.prompt);
                     } else {
-                        newLevel(3, option.prompt, option.option1, option.option2);
+                        newLevel(3, option.prompt, option.option1, option.option2, '');
                     }
                 }
             });
@@ -255,7 +256,7 @@ choice2.addEventListener('click', (event) => {
                             newLevel(4, option.prompt, option.option1, option.option2, option.option3);
                         
                         } else {
-                            newLevel(4, option.prompt, option.option1, option.option2);
+                            newLevel(4, option.prompt, option.option1, option.option2, '');
                         }
                     }
                 }
