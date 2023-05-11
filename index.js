@@ -103,7 +103,33 @@ const level5 = [
         prompt: 'Without hesitation you get and sprint for the door. You get outside and continue to run as fast as you can. Once you feel you are far enough away you stop and try to figure out where you are. It\'s pitch dark and raining outside. You find a fallen, hollow tree and decide to climb inside and wait until morning.',
         end: '10',
     },
-]
+];
+
+const wait = (milliseconds) => {
+    return new Promise(resolve => {
+        setTimeout(resolve, milliseconds);
+    });
+};
+
+let speed = 35;
+
+window.addEventListener('click', (event) => {
+    if(event.target.classList.length == 0) {
+        speed = 0;
+    }
+});
+
+const typePromptText = async (promptText, promptElement, choice1, choie2) => {
+    promptElement.textContent = '';
+    for (let i = 0; i < promptText.length; i++) {
+        promptElement.textContent += promptText[i];
+        await wait(speed);
+    }
+    speed = 35;
+
+    choice2.textContent = choice2.dataset.option;
+    choice1.textContent = choice1.dataset.option;
+};
 
 let endings;
 try {
@@ -135,15 +161,15 @@ const prompt = document.querySelector('.prompt');
 const choice1 = document.querySelector('#choice1');
 const choice2 = document.querySelector('#choice2');
 const choice3 = document.querySelector('#choice3');
-prompt.textContent = level1.prompt;
 
 choice1.dataset.level = 1;
 choice1.dataset.option = level1.option1;
-choice1.textContent = choice1.dataset.option;
 
 choice2.dataset.level = 1;
 choice2.dataset.option = level1.option2;
-choice2.textContent = choice2.dataset.option;
+
+typePromptText(level1.prompt, prompt, choice1, choice2, '');
+
 
 choice1.addEventListener('click', (event) => {
     let level = event.target.dataset.level;
@@ -177,11 +203,11 @@ choice1.addEventListener('click', (event) => {
                     if (option.end) {
                         endGame(option.end, option.prompt);
                     } else {
-                        newLevel(4, option.prompt, option.option1, option.option2);
                         if (option.option3) {
-                            choice3.dataset.level = 4;
-                            choice3.dataset.option = option.option3;
-                            choice3.textContent = choice3.dataset.option;
+                            newLevel(4, option.prompt, option.option1, option.option2, option.option3);
+                        
+                        } else {
+                            newLevel(4, option.prompt, option.option1, option.option2);
                         }
                     }
                 }
@@ -225,7 +251,12 @@ choice2.addEventListener('click', (event) => {
                     if (option.end) {
                         endGame(option.end, option.prompt);
                     } else {
-                        newLevel(4, option.prompt, option.option1, option.option2);
+                        if (option.option3) {
+                            newLevel(4, option.prompt, option.option1, option.option2, option.option3);
+                        
+                        } else {
+                            newLevel(4, option.prompt, option.option1, option.option2);
+                        }
                     }
                 }
             });
@@ -252,19 +283,23 @@ choice3.addEventListener('click', (event) => {
             });
             break;
     }
-})
+});
 
-const newLevel = (level, promptText, option1Text, option2Text) => {
-    prompt.textContent = promptText;
-
+const newLevel = (level, promptText, option1Text, option2Text, choice3Text) => {
+    choice1.textContent = '';
     choice1.dataset.level = level;
     choice1.dataset.option = option1Text;
-    choice1.textContent = choice1.dataset.option;
-
+    
+    choice2.textContent = '';
     choice2.dataset.level = level;
     choice2.dataset.option = option2Text;
-    choice2.textContent = choice2.dataset.option;
-}
+    
+    choice3.textContent = '';
+    choice3.dataset.level = level;
+    choice3.dataset.option = choice3Text;
+
+    typePromptText(promptText, prompt, choice1, choice2, choice3);
+};
 
 const endGame = (endNumber, promptText) => {
     if (!endings.includes(endNumber)) {
@@ -273,18 +308,7 @@ const endGame = (endNumber, promptText) => {
     console.log(endings);
     localStorage.ag_endings = JSON.stringify(endings);
 
-    prompt.textContent = promptText;
-    choice1.dataset.level = 0;
-    choice1.dataset.option = 'Restart';
-    choice1.textContent = choice1.dataset.option;
-
-    choice2.dataset.level = 0;
-    choice2.dataset.option = '';
-    choice2.textContent = choice2.dataset.option;
-
-    choice3.dataset.level = 0;
-    choice3.dataset.option = '';
-    choice3.textContent = choice3.dataset.option;
+    newLevel(0, promptText, 'Restart', '');
 
     setStarts();
-}
+};
